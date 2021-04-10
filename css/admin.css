@@ -1,0 +1,65 @@
+  .wrapper{
+  
+      padding: 1%;
+      width: 80%;
+      margin: 0 auto;
+   
+      
+}
+.text-center ul{
+  text-align: center;
+}
+/* css for menu */
+
+
+.menu ul{
+  list-style-type: none ;
+}
+
+.menu ul li{
+  display: inline;
+  padding: 5px;
+}
+
+.menu ul li a{
+  text-decoration: none;
+  font-weight: bold;
+  color:black;
+  font-size: 20px;
+
+}
+
+.menu ul li a:hover{
+  background-color: yellow;
+}
+/* css for menu end */
+
+/* css for main-content start */
+.main-content{
+  background-color:white;
+  height: auto;
+}
+
+.tbl-full{
+  width: 100%;
+}
+
+
+
+.col-4{
+  width: 20%;
+  background-color: white;
+  margin: 1%;
+  padding: 1%;
+  float: left;
+  text-align: center;
+
+
+}
+/* css for main-content end */
+
+/* css for footer */
+.footer{
+  background-color: #e74c3c;
+  color: white;
+}
