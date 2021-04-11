@@ -20,32 +20,53 @@
         <h1>Add Category</h1>
 
         <?php
-    if(isset($_SESSION['add']))
-    {
-        echo $_SESSION['add'];
-        unset ($_SESSION['add']); // remove session
-    }
+          if(isset($_SESSION['add']))
+          {
+              echo $_SESSION['add'];
+              unset ($_SESSION['add']); // remove session
+          }
+          if(isset($_SESSION['upload']))
+          {
+              echo $_SESSION['upload'];
+              unset ($_SESSION['upload']); 
+          }
         ?>
-      <form action="" method="POST">
+      <form action="" method="POST" enctype="multipart/form-data">
   <div class="form-group">
     <label>Title</label>
     <input type="text" class="form-control" id="title" name="title" placeholder="Category Title">
   </div>
   <br>
   <div class="form-group">
-    <label>Featured</label>
-    <input type="radio" class="form-control" id="featured" name="featured">yes
-    <input type="radio" class="form-control" id="featured" name="featured">no
-  </div>
-  
-  <br>
-  <div class="form-group">
-    <label>Password</label>
-    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+    <label >Select Image</label>
+    <input type="file" class="form-control-file" id="image" name="image">
   </div>
   <br>
+  <label>Featured :</label>
+  <div class="form-check form-check-inline">
   
-  <button type="submit" name="submit" class="btn btn-success">Add Admin</button>
+  <input class="form-check-input" type="radio" name="featured" id="featured" value="Yes">
+  <label class="form-check-label" >Yes</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="featured" id="featured" value="No">
+  <label class="form-check-label" >No</label>
+</div>
+  <br>
+<br>
+<label>Active :</label>
+  <div class="form-check form-check-inline">
+  
+  <input class="form-check-input" type="radio" name="active" id="active" value="Yes">
+  <label class="form-check-label" >Yes</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="active" id="active" value="No">
+  <label class="form-check-label" >No</label>
+</div>
+  <br>
+  <br>
+  <button type="submit" name="submit" class="btn btn-success">Add Category</button>
 </form>
     </div>
 </div>
@@ -70,29 +91,96 @@
 
     if(isset($_POST['submit']))
     {
-         $full_name = $_POST['full_name'];
-         $username = $_POST['username'];
-         $password = md5($_POST['password']); // incripted password with md5
+         $title = $_POST['title'];
 
-         // SQL query to save the data into database
-        $sql = "INSERT INTO tbl_admin SET
-            full_name='$full_name',
-            username='$username',
-            password='$password'
-            ";
+         if(isset($_POST['featured']))
+         {
+          $featured = $_POST['featured'];
+         }
+         else
+         {
+            $featured = "No";
+         }
+      
+         if(isset($_POST['active']))
+         {
+            $active = $_POST['active'];
+         }
+         else
+         {
+            $active = "No";
+         }
+          // check image is selected ro not and sit the value for image name
+          // print_r($_FILES['image']);
 
-        $res = mysqli_query($conn, $sql) or die(mysqli_error());
+          // die(); // breack cosw here
 
-        // check whether the (querybis executed) data is inserted or not and dispaly approriate message
-        if($res==TRUE){
-          $_SESSION['add']="<div class='text-success'>Admin Added Successfully</div>";
-          header("location:".SITEURL.'manag-admin.php');
-        }
-        else
-        {
-            $_SESSION['add']="<div class='text-danger'>Failed to Add Admin</div>";
-            header("location:".SITEURL.'add-admin.php');
-        }
+          if(isset($_FILES['image']['name']))
+          {
+            // upload image
+              // to upload image name, source, destiantion path
+              $image_name = $_FILES['image']['name'];
+              // upload the image
+              if($image_name != "")
+              {
+
+              // auto rename image
+              // get the extension our image (jpg, png)
+              $ext = end(explode('.',$image_name));
+
+              // rename the image
+              $image_name = "Food_Category_".rand(000, 999).'.'.$ext;  // ee.g. food_category_
+
+
+              $source_path = $_FILES['image']['tmp_name'];
+              $destination_path = "../images/category/".$image_name;
+
+              // upload image
+              $upload = move_uploaded_file($source_path, $destination_path);
+
+              // check image uploaded or not
+              // if the image is not upload then eill stop the redirec with error message
+              if($upload==false)
+              {
+                $_SESSION['upload'] = "<div class='text-success'>Faild to upload image.</div>";
+                header('location:'.SITEURL.'add-category.php');
+
+                // stop the process
+
+                die();
+              }
+            }
+          }
+          else
+          {
+            // don't upload image and save
+            $image_name="";
+          }
+         // create sql query to insert into database
+
+         $sql = "INSERT INTO tbl_category SET
+         title='$title',
+         image_name='$image_name',
+         featured='$featured',
+         active='$active'
+         ";
+
+         // execute query
+         $res = mysqli_query($conn, $sql);
+
+         // check the query executed or not data added
+
+         if($res==true)
+         {
+           // executed
+           $_SESSION['add'] = "<div class='text-success'>Category Added successfully</div>";
+           header('location:'.SITEURL.'manage-category.php');
+         }
+         else
+         {
+          $_SESSION['add'] = "<div class='text-danger'>Faild to Add category</div>";
+          header('location:'.SITEURL.'add-category.php');
+         }
     }
    
 ?>

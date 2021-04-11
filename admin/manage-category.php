@@ -20,50 +20,59 @@
         <h1>Manage Category</h1> 
       
         <?php
+            
             if(isset($_SESSION['add']))
             {
                 echo $_SESSION['add'];
-                unset($_SESSION['add']); // remove sessioin message
+                unset ($_SESSION['add']); // remove session
+            }
+            if(isset($_SESSION['remove']))
+            {
+                echo $_SESSION['remove'];
+                unset ($_SESSION['remove']);
             }
             if(isset($_SESSION['delete']))
             {
                 echo $_SESSION['delete'];
-                unset($_SESSION['delete']);
+                unset ($_SESSION['delete']);
+            }
+            if(isset($_SESSION['no-category-found']))
+            {
+                echo $_SESSION['no-category-found'];
+                unset ($_SESSION['no-category-found']);
             }
             if(isset($_SESSION['update']))
             {
                 echo $_SESSION['update'];
-                unset($_SESSION['update']);
+                unset ($_SESSION['update']);
             }
-            if(isset($_SESSION['user-not-found']))
+            if(isset($_SESSION['upload']))
             {
-                echo $_SESSION['user-not-found'];
-                unset($_SESSION['user-not-found']);
+                echo $_SESSION['upload'];
+                unset ($_SESSION['upload']);
             }
-            if(isset($_SESSION['pwd-not-match']))
+            if(isset($_SESSION['failed-remove']))
             {
-                echo $_SESSION['pwd-not-match'];
-                unset($_SESSION['pwd-not-match']);
+                echo $_SESSION['failed-remove'];
+                unset ($_SESSION['failed-remove']);
             }
-            if(isset($_SESSION['change-pwd']))
-            {
-                echo $_SESSION['change-pwd'];
-                unset($_SESSION['change-pwd']);
-            }
+          
         ?>
           <br>
         <a href="add-category.php" class="btn btn-primary">Add Admin</a>
         <br/><br/><br/>
  <table class="tbl-full">
      <tr>
-     <th>S.N</th>
-        <th>Full Name</th>
-        <th>User name</th>
+        <th>S.N</th>
+        <th>Title</th>
+        <th>Image</th>
+        <th>Feature</th>  
+        <th>Active</th>  
         <th>Action</th>  
     </tr>
     <?php
         // query to get all admin
-        $sql = 'SELECT * FROM tbl_admin';
+        $sql = 'SELECT * FROM tbl_category';
         //Execute the query
         $res = mysqli_query($conn, $sql);
 
@@ -79,18 +88,41 @@
                     //and while loop will run as long as we have date in database
 
                     $id=$rows['id'];
-                    $full_name=$rows['full_name'];
-                    $username=$rows['username'];
+                    $title=$rows['title'];
+                    $image_name=$rows['image_name'];
+                    $featured=$rows['featured'];
+                    $active=$rows['active'];
+
                     ?>
 
                         <tr>
                                 <td><?php echo $sn++; ?></td>
-                                <td><?php echo $full_name; ?></td>
-                                <td><?php echo $username; ?></td>
+                                <td><?php echo $title; ?></td>
                                 <td>
-                                <a href="<?php echo SITEURL; ?>update-password.php?id=<?php echo $id; ?>" class="btn btn-primary">Change Password</a>
-                                <a href="<?php echo SITEURL; ?>update-admin.php?id=<?php echo $id; ?>" class="btn btn-success">Update Admin</a>
-                                <a href="<?php echo SITEURL; ?>delete-admin.php?id=<?php echo $id; ?>" class="btn btn-danger">Delete Admin</a></td>
+                                    <?php 
+                                        // check image
+                                        if($image_name!=="")
+                                        {
+                                                ?>
+
+                                                <img src="<?php echo SITEURL; ?>../images/category/<?php echo $image_name; ?>" width="70px" height="70px">
+
+                                                <?php
+                                        }
+                                        else
+                                        {
+                                            // dispaly message
+                                            echo "<div class='text-danger'>Image not added.</div>";
+                                        }
+                                    ?>
+                                </td>
+                                <td><?php echo $featured; ?></td>
+                                <td><?php echo $active; ?></td>
+                                
+                                <td>
+                                <!-- <a href="<?php echo SITEURL; ?>update-password.php?id=<?php echo $id; ?>" class="btn btn-primary">Change Password</a> -->
+                                <a href="<?php echo SITEURL; ?>update-category.php?id=<?php echo $id; ?>" class="btn btn-success">Update Category</a>
+                                <a href="<?php echo SITEURL; ?>delete-category.php?id=<?php echo $id; ?>&image_name=<?php echo $image_name; ?>" class="btn btn-danger">Delete Category</a></td>
                             </tr>
                     <?php
                 }
